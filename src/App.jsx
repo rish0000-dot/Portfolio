@@ -1,0 +1,815 @@
+import './index.css'
+
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float, Stars } from '@react-three/drei';
+
+// Custom cursor component
+const CustomCursor = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    const updateMousePosition = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseOver = (e) => {
+      if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+        setIsHovering(true);
+      } else {
+        setIsHovering(false);
+      }
+    };
+
+    window.addEventListener('mousemove', updateMousePosition);
+    window.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, []);
+
+  return (
+    <>
+      <motion.div
+        className="fixed w-4 h-4 bg-cyan-400 rounded-full pointer-events-none z-50 mix-blend-difference"
+        animate={{
+          x: mousePosition.x - 8,
+          y: mousePosition.y - 8,
+          scale: isHovering ? 1.5 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 500, damping: 28 }}
+      />
+      <motion.div
+        className="fixed w-8 h-8 border-2 border-cyan-400 rounded-full pointer-events-none z-50 mix-blend-difference"
+        animate={{
+          x: mousePosition.x - 16,
+          y: mousePosition.y - 16,
+          scale: isHovering ? 1.5 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 150, damping: 15 }}
+      />
+    </>
+  );
+};
+
+// Loading screen
+const LoadingScreen = ({ isLoading }) => {
+  return (
+    <AnimatePresence>
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black"
+        >
+          <div className="relative">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="w-20 h-20 border-4 border-cyan-400 border-t-transparent rounded-full"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-cyan-400 font-mono text-sm whitespace-nowrap"
+            >
+              Initializing...
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// 3D Animated Globe
+const AnimatedSphere = () => {
+  const meshRef = useRef();
+  
+  useFrame(({ clock }) => {
+    meshRef.current.rotation.x = clock.getElapsedTime() * 0.2;
+    meshRef.current.rotation.y = clock.getElapsedTime() * 0.3;
+  });
+
+  return (
+    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+      <Sphere ref={meshRef} args={[1, 100, 100]} scale={2.5}>
+        <MeshDistortMaterial
+          color="#06b6d4"
+          attach="material"
+          distort={0.3}
+          speed={2}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </Sphere>
+    </Float>
+  );
+};
+
+// Hero Section
+const HeroSection = () => {
+  const [typedText, setTypedText] = useState('');
+  const skills = ['Python', 'Java', 'MERN Stack', 'SQL', 'AI/ML'];
+  const [currentSkillIndex, setCurrentSkillIndex] = useState(0);
+
+  useEffect(() => {
+    const currentSkill = skills[currentSkillIndex];
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= currentSkill.length) {
+        setTypedText(currentSkill.substring(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+        setTimeout(() => {
+          setCurrentSkillIndex((prev) => (prev + 1) % skills.length);
+        }, 2000);
+      }
+    }, 100);
+
+    return () => clearInterval(typingInterval);
+  }, [currentSkillIndex]);
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* 3D Background */}
+      <div className="absolute inset-0 z-0">
+        <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1} />
+            <AnimatedSphere />
+            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+          </Suspense>
+        </Canvas>
+      </div>
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black z-10" />
+
+      {/* Content */}
+      <div className="relative z-20 text-center px-4 max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-cyan-400 text-sm md:text-base mb-4 font-mono tracking-wider"
+          >
+            &lt;Hello World /&gt;
+          </motion.p>
+          
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600"
+          >
+            Rishabh Sharma
+          </motion.h1>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 text-white"
+          >
+            Aspiring Software Engineer & Data Analyst
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="text-lg md:text-xl text-gray-300 mb-8 italic"
+          >
+            "Building scalable digital solutions with code and creativity."
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1 }}
+            className="flex items-center justify-center gap-2 text-cyan-400 text-xl md:text-2xl mb-12 font-mono h-12"
+          >
+            <span>{typedText}</span>
+            <motion.span
+              animate={{ opacity: [1, 0] }}
+              transition={{ duration: 0.8, repeat: Infinity }}
+            >
+              |
+            </motion.span>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3 }}
+            className="flex flex-wrap gap-4 justify-center"
+          >
+            <button className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
+              <span className="relative z-10">View Projects</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
+            
+            <button className="group relative px-8 py-4 bg-white/5 backdrop-blur-md border-2 border-cyan-400/30 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30 hover:scale-105">
+              <span className="relative z-10">Download Resume</span>
+            </button>
+            
+            <button className="group relative px-8 py-4 bg-white/5 backdrop-blur-md border-2 border-purple-400/30 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105">
+              <span className="relative z-10">Contact Me</span>
+            </button>
+          </motion.div>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-cyan-400 text-3xl"
+          >
+            ↓
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// About Section
+const AboutSection = () => {
+  const technologies = [
+    { name: 'Python', level: 90, icon: '🐍' },
+    { name: 'Java', level: 85, icon: '☕' },
+    { name: 'MERN Stack', level: 88, icon: '⚛️' },
+    { name: 'SQL', level: 82, icon: '🗄️' },
+    { name: 'AI/ML', level: 75, icon: '🤖' },
+    { name: 'DSA', level: 80, icon: '📊' },
+  ];
+
+  return (
+    <section className="relative py-24 px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+            About Me
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            <div className="relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hover:border-cyan-400/50 transition-all duration-300">
+              <div className="absolute -top-3 -left-3 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl" />
+              <div className="absolute -bottom-3 -right-3 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl" />
+              
+              <div className="relative">
+                <div className="text-cyan-400 text-5xl mb-4">👨‍💻</div>
+                <h3 className="text-2xl font-bold text-white mb-4">Passionate Developer</h3>
+                <p className="text-gray-300 leading-relaxed text-lg">
+                  B.Tech CSE student passionate about full-stack development and data analytics. 
+                  Skilled in <span className="text-cyan-400 font-semibold">Python</span>, <span className="text-cyan-400 font-semibold">Java</span>, <span className="text-cyan-400 font-semibold">SQL</span>, 
+                  HTML/CSS/JS, <span className="text-cyan-400 font-semibold">MERN stack</span>, DSA, and cloud fundamentals. 
+                  Focused on building scalable applications and solving real-world problems through innovative technology solutions.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-6"
+          >
+            {technologies.map((tech, index) => (
+              <motion.div
+                key={tech.name}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{tech.icon}</span>
+                    <span className="text-white font-semibold text-lg">{tech.name}</span>
+                  </div>
+                  <span className="text-cyan-400 font-mono">{tech.level}%</span>
+                </div>
+                <div className="relative h-3 bg-white/5 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${tech.level}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: index * 0.1 }}
+                    className="absolute h-full bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full group-hover:from-cyan-300 group-hover:to-purple-600 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Projects Section
+const ProjectsSection = () => {
+  const projects = [
+    {
+      title: 'Full-Stack Web Application',
+      description: 'A scalable MERN stack application with authentication, real-time features, and responsive design.',
+      tech: ['React', 'Node.js', 'MongoDB', 'Express'],
+      gradient: 'from-cyan-500 to-blue-600',
+      icon: '🌐',
+    },
+    {
+      title: 'Data Analytics Dashboard',
+      description: 'Interactive dashboard for data visualization and analysis using Python and modern frameworks.',
+      tech: ['Python', 'Pandas', 'Plotly', 'SQL'],
+      gradient: 'from-blue-500 to-purple-600',
+      icon: '📊',
+    },
+    {
+      title: 'AI/ML Project',
+      description: 'Machine learning model for predictive analytics with high accuracy and real-world applications.',
+      tech: ['Python', 'TensorFlow', 'Scikit-learn', 'NumPy'],
+      gradient: 'from-purple-500 to-pink-600',
+      icon: '🤖',
+    },
+    {
+      title: 'API-Based Application',
+      description: 'RESTful API integration project with secure endpoints and efficient data handling.',
+      tech: ['Node.js', 'Express', 'REST', 'JWT'],
+      gradient: 'from-pink-500 to-red-600',
+      icon: '🔌',
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-black" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+            Featured Projects
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
+          <p className="text-gray-400 mt-4 text-lg">Building innovative solutions that make a difference</p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {projects.map((project, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="group relative"
+            >
+              <div className="relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-cyan-400/50 hover:shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                
+                <div className="relative">
+                  <div className="text-5xl mb-4">{project.icon}</div>
+                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-gray-400 mb-6 leading-relaxed">
+                    {project.description}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tech.map((t, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1 bg-white/10 border border-white/20 rounded-full text-sm text-cyan-400 font-mono backdrop-blur-sm"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <button className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
+                      View Demo
+                    </button>
+                    <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-semibold text-white transition-all duration-300 hover:border-cyan-400 hover:text-cyan-400">
+                      GitHub →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Skills Section
+const SkillsSection = () => {
+  const skillCategories = [
+    {
+      category: 'Frontend',
+      skills: ['HTML', 'CSS', 'JavaScript', 'React'],
+      icon: '🎨',
+      color: 'cyan',
+    },
+    {
+      category: 'Backend',
+      skills: ['Node.js', 'Express', 'REST APIs'],
+      icon: '⚙️',
+      color: 'blue',
+    },
+    {
+      category: 'Languages',
+      skills: ['Python', 'Java', 'C++'],
+      icon: '💻',
+      color: 'purple',
+    },
+    {
+      category: 'Database',
+      skills: ['SQL', 'MongoDB', 'PostgreSQL'],
+      icon: '🗄️',
+      color: 'pink',
+    },
+    {
+      category: 'Tools',
+      skills: ['Git', 'Docker', 'AWS', 'Linux'],
+      icon: '🛠️',
+      color: 'indigo',
+    },
+    {
+      category: 'Concepts',
+      skills: ['DSA', 'OOP', 'System Design'],
+      icon: '📚',
+      color: 'violet',
+    },
+  ];
+
+  const colorMap = {
+    cyan: 'from-cyan-400 to-cyan-600',
+    blue: 'from-blue-400 to-blue-600',
+    purple: 'from-purple-400 to-purple-600',
+    pink: 'from-pink-400 to-pink-600',
+    indigo: 'from-indigo-400 to-indigo-600',
+    violet: 'from-violet-400 to-violet-600',
+  };
+
+  return (
+    <section className="relative py-24 px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+            Technical Skills
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skillCategories.map((category, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="group relative"
+            >
+              <div className="relative p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-cyan-400/50 hover:shadow-2xl hover:shadow-cyan-500/20">
+                <div className={`absolute inset-0 bg-gradient-to-br ${colorMap[category.color]} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-4xl">{category.icon}</span>
+                    <h3 className="text-xl font-bold text-white">{category.category}</h3>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill, i) => (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.1 + i * 0.05 }}
+                        className={`px-3 py-1 bg-gradient-to-r ${colorMap[category.color]} bg-opacity-20 border border-white/20 rounded-full text-sm text-white font-medium backdrop-blur-sm hover:scale-110 transition-transform duration-200 cursor-pointer`}
+                      >
+                        {skill}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Contact Section
+const ContactSection = () => {
+  return (
+    <section className="relative py-24 px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-black" />
+      
+      {/* Animated background */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500 rounded-full filter blur-[100px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full filter blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+      </div>
+      
+      <div className="relative z-10 max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+            Let's Connect
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
+          <p className="text-gray-400 mt-4 text-lg">Ready to collaborate on exciting projects</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl"
+        >
+          <div className="space-y-6">
+            <div className="group">
+              <label className="block text-sm font-medium text-gray-400 mb-2">Name</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+                placeholder="Your name"
+              />
+            </div>
+            
+            <div className="group">
+              <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
+              <input
+                type="email"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+                placeholder="your.email@example.com"
+              />
+            </div>
+            
+            <div className="group">
+              <label className="block text-sm font-medium text-gray-400 mb-2">Message</label>
+              <textarea
+                rows={4}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 resize-none"
+                placeholder="Let's discuss your project..."
+              />
+            </div>
+            
+            <button className="w-full px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-[1.02]">
+              Send Message
+            </button>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-12 flex justify-center gap-6"
+        >
+          <a
+            href="https://github.com/rish0000-dot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl transition-all duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30 hover:-translate-y-1"
+          >
+            <svg className="w-8 h-8 text-white group-hover:text-cyan-400 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+          
+          <a
+            href="https://www.linkedin.com/in/rishabh-sharma"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl transition-all duration-300 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1"
+          >
+            <svg className="w-8 h-8 text-white group-hover:text-blue-400 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          
+          <a
+            href="mailto:rishabhsharma14426@gmail.com"
+            className="group relative p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl transition-all duration-300 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-1"
+          >
+            <svg className="w-8 h-8 text-white group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </a>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// Footer
+const Footer = () => {
+  return (
+    <footer className="relative py-8 px-4 border-t border-white/10">
+      <div className="absolute inset-0 bg-black" />
+      <div className="relative z-10 max-w-7xl mx-auto text-center">
+        <p className="text-gray-400 font-mono">
+          &lt;/&gt; Designed & Built by <span className="text-cyan-400">Rishabh Sharma</span> • {new Date().getFullYear()}
+        </p>
+        <p className="text-gray-500 text-sm mt-2">
+          Made with React, Three.js & Tailwind CSS
+        </p>
+      </div>
+    </footer>
+  );
+};
+
+// Navigation
+const Navigation = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        scrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600"
+        >
+          RS
+        </motion.div>
+        
+        <div className="hidden md:flex gap-8">
+          {['About', 'Projects', 'Skills', 'Contact'].map((item) => (
+            <motion.a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              whileHover={{ scale: 1.1 }}
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+            >
+              {item}
+            </motion.a>
+          ))}
+        </div>
+      </div>
+    </motion.nav>
+  );
+};
+
+// Main App Component
+export default function PortfolioWebsite() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 2000);
+  }, []);
+
+  return (
+    <div className={`min-h-screen ${darkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          font-family: 'Inter', sans-serif;
+          overflow-x: hidden;
+          cursor: none;
+        }
+        
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        
+        .animate-shimmer {
+          animation: shimmer 3s infinite;
+        }
+        
+        ::-webkit-scrollbar {
+          width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: #000;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #06b6d4, #8b5cf6);
+          border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, #0891b2, #7c3aed);
+        }
+      `}</style>
+      
+      <LoadingScreen isLoading={isLoading} />
+      <CustomCursor />
+      <Navigation />
+      
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <ProjectsSection />
+        <SkillsSection />
+        <ContactSection />
+        <Footer />
+      </main>
+      
+      {/* Dark mode toggle */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setDarkMode(!darkMode)}
+        className="fixed bottom-8 right-8 z-50 p-4 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-2xl hover:border-cyan-400 transition-all duration-300"
+      >
+        {darkMode ? '☀️' : '🌙'}
+      </motion.button>
+    </div>
+  );
+}
