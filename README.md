@@ -41,9 +41,7 @@ The goal of this project is to build a strong online presence and demonstrate my
    npm start
    ```
 
-## 🎯 Goal of the Project
 
-The goal of this project is to make coding learning easier and more interactive for students by combining AI guidance with practical coding tools.
 
 ## 🤝 Contribution
 
