@@ -1,16 +1,54 @@
-# React + Vite
+# Portfolio Project Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This portfolio project is a personal showcase website that highlights my skills, projects, and technical experience as a developer. It is designed with a clean and modern user interface that presents my work in a professional and organized way. The portfolio includes sections for project demonstrations, technical skills, and contact information, making it easy for visitors to explore my work.
 
-Currently, two official plugins are available:
+The goal of this project is to build a strong online presence and demonstrate my practical development abilities. It reflects my understanding of frontend design, responsive layout, and user-friendly navigation. This portfolio serves as a central platform to present my achievements and growth as a programmer.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Frontend: HTML / CSS / JavaScript (or React)
+* Backend: Node.js / Python
+* AI Integration: Claude API
 
-## Expanding the ESLint configuration
+## 🎥 Demo
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+👉 Watch the project demo here: *(paste your video link here)*
+
+## 🚀 How to Run the Project
+
+1. Clone the repository
+
+   ```
+   git clone https://github.com/your-username/your-repo-name.git
+   ```
+
+2. Open the project folder
+
+   ```
+   cd your-repo-name
+   ```
+
+3. Install dependencies
+
+   ```
+   npm install
+   ```
+
+4. Run the project
+
+   ```
+   npm start
+   ```
+
+## 🎯 Goal of the Project
+
+The goal of this project is to make coding learning easier and more interactive for students by combining AI guidance with practical coding tools.
+
+## 🤝 Contribution
+
+Contributions, suggestions, and feedback are welcome! Feel free to fork this repo and submit a pull request.
+
+## 📄 License
+
+This project is open-source and available under the MIT License.
