@@ -5,6 +5,9 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'fra
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial, Float, Stars } from '@react-three/drei';
 import AntigravityBackground from './components/AntigravityBackground';
+import Robot from './components/Robot';
+import HangingRobot from './components/HangingRobot';
+import ProjectsRing from './components/ProjectsRing';
 
 // Custom cursor component
 const CustomCursor = () => {
@@ -116,22 +119,25 @@ const AnimatedSphere = () => {
 
 // Hero Section
 const HeroSection = () => {
+  // Typing Effect
   const [typedText, setTypedText] = useState('');
-  const skills = ['Python', 'Java', 'MERN Stack', 'SQL', 'AI/ML'];
   const [currentSkillIndex, setCurrentSkillIndex] = useState(0);
+  const skills = ['Data Structures', 'Full Stack Developer', 'React Developer', 'Problem Solver', 'AI/ML'];
 
   useEffect(() => {
     const currentSkill = skills[currentSkillIndex];
-    let currentIndex = 0;
+    let charIndex = 0;
+
     const typingInterval = setInterval(() => {
-      if (currentIndex <= currentSkill.length) {
-        setTypedText(currentSkill.substring(0, currentIndex));
-        currentIndex++;
+      if (charIndex <= currentSkill.length) {
+        setTypedText(currentSkill.slice(0, charIndex));
+        charIndex++;
       } else {
         clearInterval(typingInterval);
         setTimeout(() => {
+          setTypedText('');
           setCurrentSkillIndex((prev) => (prev + 1) % skills.length);
-        }, 2000);
+        }, 1500);
       }
     }, 100);
 
@@ -140,130 +146,133 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-transparent">
-      {/* Content */}
-      <div className="relative z-20 text-center px-4 max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-cyan-400 text-sm md:text-base mb-4 font-mono tracking-wider"
-          >
-            &lt;Hello World /&gt;
-          </motion.p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600"
-          >
-            Rishabh Sharma
-          </motion.h1>
+      <div className="relative z-20 max-w-7xl mx-auto px-4 w-full grid lg:grid-cols-2 gap-8 items-center">
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 text-white"
-          >
-            Aspiring Software Engineer & Data Analyst
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="text-lg md:text-xl text-gray-300 mb-8 italic"
-          >
-            "Building scalable digital solutions with code and creativity."
-          </motion.p>
-
+        {/* Left Column: Text Content */}
+        <div className="text-left">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1 }}
-            className="flex items-center justify-center gap-2 text-cyan-400 text-xl md:text-2xl mb-12 font-mono h-12"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <span>{typedText}</span>
-            <motion.span
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-cyan-400 text-sm md:text-base mb-4 font-mono tracking-wider"
             >
-              |
-            </motion.span>
+              &lt;Hello World /&gt;
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-5xl md:text-7xl lg:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 leading-tight"
+            >
+              Rishabh Sharma
+            </motion.h1>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="text-2xl md:text-3xl lg:text-3xl font-semibold mb-6 text-white"
+            >
+              Aspiring Software/Web Developer
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="text-lg md:text-xl text-gray-300 mb-8 italic max-w-lg"
+            >
+              "Building scalable digital solutions with code and creativity."
+            </motion.p>
+
+            <div className="flex items-center gap-2 mb-10 h-8">
+              <span className="text-cyan-400 font-mono text-xl">{typedText}</span>
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="text-cyan-400 text-xl"
+              >
+                |
+              </motion.span>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.3 }}
+              className="flex flex-wrap gap-4"
+            >
+              <a href="#projects">
+                <button className="group relative px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
+                  <span className="relative z-10">View Projects</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </button>
+              </a>
+
+              <a href="/resume_rishabh.html" download="Rishabh_Sharma_Resume.html" target="_blank" rel="noopener noreferrer">
+                <button className="group relative px-6 py-3 bg-white/5 backdrop-blur-md border-2 border-cyan-400/30 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30 hover:scale-105">
+                  <span className="relative z-10">Download Resume</span>
+                </button>
+              </a>
+
+              <a href="#contact">
+                <button className="group relative px-6 py-3 bg-white/5 backdrop-blur-md border-2 border-purple-400/30 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105">
+                  <span className="relative z-10">Contact Me</span>
+                </button>
+              </a>
+            </motion.div>
           </motion.div>
+        </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3 }}
-            className="flex flex-wrap gap-4 justify-center"
-          >
-            <a href="#projects">
-              <button className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
-                <span className="relative z-10">View Projects</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </button>
-            </a>
-
-            <a href="/resume_rishabh.html" download="Rishabh_Sharma_Resume.html" target="_blank" rel="noopener noreferrer">
-              <button className="group relative px-8 py-4 bg-white/5 backdrop-blur-md border-2 border-cyan-400/30 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30 hover:scale-105">
-                <span className="relative z-10">Download Resume</span>
-              </button>
-            </a>
-
-            <a href="#contact">
-              <button className="group relative px-8 py-4 bg-white/5 backdrop-blur-md border-2 border-purple-400/30 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105">
-                <span className="relative z-10">Contact Me</span>
-              </button>
-            </a>
-          </motion.div>
-        </motion.div>
-
+        {/* Right Column: Hanging Robot */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="h-[500px] lg:h-[700px] w-full relative"
         >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-cyan-400 text-3xl"
-          >
-            ↓
-          </motion.div>
+          <HangingRobot />
         </motion.div>
+
       </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-cyan-400 text-3xl"
+        >
+          ↓
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
 
 // About Section
 const AboutSection = () => {
-  const technologies = [
-    { name: 'Java', level: 90, icon: '☕' },
-    { name: 'MERN Stack', level: 95, icon: '⚛️' },
-    { name: 'Python', level: 70, icon: '🐍' },
-    { name: 'SQL', level: 82, icon: '🗄️' },
-    { name: 'AI/ML', level: 75, icon: '🤖' },
-    { name: 'DSA', level: 80, icon: '📊' },
-  ];
-
   return (
-    <section id="about" className="relative py-24 px-4 overflow-hidden bg-transparent">
-      <div className="relative z-10 max-w-7xl mx-auto">
+    <section id="about" className="relative py-12 px-4 md:px-8 lg:px-12 overflow-hidden bg-transparent">
+      <div className="relative z-10 max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
             About Me
@@ -271,7 +280,8 @@ const AboutSection = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-8 items-center">
+          {/* Left Column: Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -283,49 +293,44 @@ const AboutSection = () => {
               <div className="absolute -top-3 -left-3 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl" />
               <div className="absolute -bottom-3 -right-3 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl" />
 
-              <div className="relative">
+              <div className="relative space-y-6">
                 <div className="text-cyan-400 text-5xl mb-4">👨‍💻</div>
-                <h3 className="text-2xl font-bold text-white mb-4">Passionate Developer</h3>
-                <p className="text-gray-300 leading-relaxed text-lg">
-                  B.Tech CSE student passionate about full-stack development and data analytics.
-                  Skilled in <span className="text-cyan-400 font-semibold">Python</span>, <span className="text-cyan-400 font-semibold">Java</span>, <span className="text-cyan-400 font-semibold">SQL</span>,
-                  HTML/CSS/JS, <span className="text-cyan-400 font-semibold">MERN stack</span>, DSA, and cloud fundamentals.
-                  Focused on building scalable applications and solving real-world problems through innovative technology solutions.
-                </p>
+
+                <div>
+                  <h3 className="text-3xl font-bold text-white mb-2">I’m Rishabh Sharma</h3>
+                  <p className="text-cyan-400 font-mono text-lg">Aspiring Software/Web Developer</p>
+                </div>
+
+                <div className="text-gray-300 space-y-2 leading-relaxed text-base md:text-lg">
+                  <p>🔭 I’m currently pursuing B.Tech (2nd Year) in Computer Science</p>
+                  <p>✒️ I have a background in Computer Science and Programming</p>
+                  <p>🌱 I’m currently learning Data Structures, .NET, and Full Stack Development</p>
+                  <p>👯 I’m looking to collaborate on Web Development projects</p>
+                </div>
+
+                <div className="pt-4 border-t border-white/10 space-y-2">
+                  <p className="flex items-center gap-3 text-gray-300">
+                    <span className="text-xl">📧</span>
+                    <a href="mailto:rishabhsharma14426@gmail.com" className="hover:text-cyan-400 transition-colors">rishabhsharma14426@gmail.com</a>
+                  </p>
+                  <p className="flex items-center gap-3 text-gray-300">
+                    <span className="text-xl">📍</span>
+                    <span>Mathura, India – 281001</span>
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
 
+          {/* Right Column: 3D Robot */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 h-full content-between"
+            className="flex items-center justify-center h-full min-h-[300px]"
           >
-            {technologies.map((tech, index) => (
-              <motion.div
-                key={tech.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className="group relative p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:border-cyan-400/30 transition-all duration-300"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                <div className="relative flex items-center gap-4">
-                  <div className="w-12 h-12 flex items-center justify-center bg-white/5 rounded-lg text-2xl group-hover:scale-110 transition-transform duration-300">
-                    {tech.icon}
-                  </div>
-                  <div>
-                    <h4 className="text-white font-semibold text-lg">{tech.name}</h4>
-                    <div className="mt-1 h-0.5 w-12 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full" />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            <Robot />
           </motion.div>
         </div>
       </div>
@@ -334,17 +339,30 @@ const AboutSection = () => {
 };
 
 // Projects Section
+// Projects Section
 const ProjectsSection = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Auto-rotate effect
+  useEffect(() => {
+    if (isPaused) return; // Stop rotation if paused
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % 6);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
   const projects = [
     {
-      title: 'Full-Stack Web Application',
+      title: 'Full-Stack Web App',
       description: 'A scalable MERN stack application with authentication, real-time features, and responsive design.',
       tech: ['React', 'Node.js', 'MongoDB', 'Express'],
       gradient: 'from-cyan-500 to-blue-600',
       icon: '🌐',
     },
     {
-      title: 'CODEGUARDIA-PROJECT',
+      title: 'CODEGUARDIA',
       description: 'Advanced code security and monitoring system designed to protect and analyze codebases.',
       tech: ['Python', 'Pandas', 'Plotly', 'SQL'],
       gradient: 'from-blue-500 to-purple-600',
@@ -359,89 +377,88 @@ const ProjectsSection = () => {
       icon: '🤖',
     },
     {
-      title: 'API-Based Application',
+      title: 'API-Based App',
       description: 'RESTful API integration project with secure endpoints and efficient data handling.',
       tech: ['Node.js', 'Express', 'REST', 'JWT'],
       gradient: 'from-pink-500 to-red-600',
       icon: '🔌',
     },
+    {
+      title: 'Portfolio Website',
+      description: 'Modern 3D portfolio featuring interactive elements and smooth animations.',
+      tech: ['React', 'Three.js', 'Tailwind', 'Framer'],
+      gradient: 'from-cyan-400 to-teal-500',
+      icon: '🎨',
+    },
+    {
+      title: 'Data Visualizer',
+      description: 'Interactive dashboard for visualizing complex datasets.',
+      tech: ['D3.js', 'React', 'Firebase'],
+      gradient: 'from-orange-500 to-red-500',
+      icon: '📊',
+    }
   ];
 
   return (
-    <section id="projects" className="relative py-24 px-4 overflow-hidden bg-transparent">
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
-            Featured Projects
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
-          <p className="text-gray-400 mt-4 text-lg">Building innovative solutions that make a difference</p>
-        </motion.div>
+    <section
+      id="projects"
+      className="relative min-h-screen py-10 px-4 overflow-hidden bg-transparent flex flex-col justify-center"
+      onClick={() => setIsPaused(false)} // Resume rotation on background click
+    >
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group relative"
-            >
-              <div className="relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-cyan-400/50 hover:shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2">
-                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+      <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 items-center">
+        {/* Left Column: Project List & Info */}
+        <div className="space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-4"
+          >
+            <h2 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+              Projects Work
+            </h2>
+          </motion.div>
 
-                <div className="relative">
-                  <div className="text-5xl mb-4">{project.icon}</div>
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+          {/* Interactive List */}
+          <div className="space-y-4">
+            {projects.map((project, index) => (
+              <motion.div
+                key={index}
+                className={`group cursor-pointer flex items-center gap-4 p-3 rounded-xl transition-all duration-300
+                                ${activeIndex === index ? 'bg-white/10 border border-cyan-500/30' : 'hover:bg-white/5 border border-transparent'}`}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent resumption
+                  setActiveIndex(index);
+                  setIsPaused(true);
+                }}
+              >
+                <span className={`text-xl font-mono transition-colors ${activeIndex === index ? 'text-cyan-400' : 'text-gray-600'}`}>
+                  0{index + 1}
+                </span>
+
+                <div>
+                  <h3 className={`text-xl font-bold transition-colors ${activeIndex === index ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'}`}>
                     {project.title}
                   </h3>
-                  <p className="text-gray-400 mb-6 leading-relaxed">
-                    {project.description}
+                  <p className={`text-xs transition-all ${activeIndex === index ? 'text-cyan-300 opacity-100 h-auto mt-1' : 'text-transparent opacity-0 h-0 overflow-hidden'}`}>
+                    Click to view full detail &rarr;
                   </p>
-
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((t, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 bg-white/10 border border-white/20 rounded-full text-sm text-cyan-400 font-mono backdrop-blur-sm"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex gap-4">
-                    <a
-                      href={project.isCodeGuardia ? "https://github.com/rish0000-dot/CODEGUARDIA-PROJECT" : "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1"
-                    >
-                      <button className="w-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
-                        View Demo
-                      </button>
-                    </a>
-                    <a
-                      href={project.isCodeGuardia ? "https://github.com/rish0000-dot/CODEGUARDIA-PROJECT" : "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-semibold text-white transition-all duration-300 hover:border-cyan-400 hover:text-cyan-400">
-                        GitHub →
-                      </button>
-                    </a>
-                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Column: 3D Ring */}
+        <div className="h-[600px] w-full relative">
+          <ProjectsRing
+            projects={projects}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+            isPaused={isPaused}
+            setIsPaused={setIsPaused}
+          />
         </div>
       </div>
     </section>
@@ -869,10 +886,23 @@ const Navigation = () => {
     >
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600"
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative flex items-center justify-center w-14 h-14 bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 shadow-lg shadow-cyan-500/20 group cursor-pointer overflow-hidden"
         >
-          RS
+          {/* Animated Gradient Background on Hover */}
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 to-purple-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+          {/* Glowing Border effect */}
+          <div className="absolute inset-0 border-2 border-transparent group-hover:border-cyan-400/50 rounded-xl transition-colors duration-500" />
+
+          {/* Text */}
+          <span className="relative z-10 text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 group-hover:from-white group-hover:to-cyan-200 transition-all duration-300 font-sans tracking-tighter">
+            RS
+          </span>
+
+          {/* Shine effect */}
+          <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent z-20" />
         </motion.div>
 
         <div className="hidden md:flex gap-8">
