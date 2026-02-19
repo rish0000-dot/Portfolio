@@ -8,6 +8,8 @@ import AntigravityBackground from './components/AntigravityBackground';
 import Robot from './components/Robot';
 import HangingRobot from './components/HangingRobot';
 import ProjectsRing from './components/ProjectsRing';
+import ProjectStack3D from './components/ProjectStack3D';
+import AboutImageCard from './components/AboutImageCard';
 
 // Custom cursor component
 const CustomCursor = () => {
@@ -280,16 +282,16 @@ const AboutSection = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-8 items-center">
+        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-8 items-stretch">
           {/* Left Column: Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="relative h-full"
           >
-            <div className="relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hover:border-cyan-400/50 transition-all duration-300">
+            <div className="relative h-full p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hover:border-cyan-400/50 transition-all duration-300">
               <div className="absolute -top-3 -left-3 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl" />
               <div className="absolute -bottom-3 -right-3 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl" />
 
@@ -328,9 +330,9 @@ const AboutSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="flex items-center justify-center h-full min-h-[300px]"
+            className="flex items-center justify-center h-full min-h-[400px]"
           >
-            <Robot />
+            <AboutImageCard imageUrl="/about-me.jpg" />
           </motion.div>
         </div>
       </div>
@@ -406,57 +408,82 @@ const ProjectsSection = () => {
       onClick={() => setIsPaused(false)} // Resume rotation on background click
     >
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 items-center">
         {/* Left Column: Project List & Info */}
-        <div className="space-y-8">
+        <div className="space-y-12">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h2 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
-              Projects Work
+            <div className="inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-xs font-mono uppercase tracking-widest">
+              Selected Works
+            </div>
+            <h2 className="text-6xl md:text-7xl font-black text-white leading-tight">
+              Featured <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+                Projects
+              </span>
             </h2>
+            <p className="text-gray-400 max-w-md text-lg leading-relaxed">
+              A collection of high-end digital experiences, built with precision and a focus on performance.
+            </p>
           </motion.div>
 
-          {/* Interactive List */}
-          <div className="space-y-4">
+          {/* Interactive List - Editorial Style */}
+          <div className="space-y-1">
             {projects.map((project, index) => (
               <motion.div
                 key={index}
-                className={`group cursor-pointer flex items-center gap-4 p-3 rounded-xl transition-all duration-300
-                                ${activeIndex === index ? 'bg-white/10 border border-cyan-500/30' : 'hover:bg-white/5 border border-transparent'}`}
+                className={`group cursor-pointer flex items-center justify-between p-4 rounded-2xl transition-all duration-500
+                                ${activeIndex === index ? 'bg-white/5 backdrop-blur-md border border-white/10' : 'hover:bg-white/[0.02] border border-transparent'}`}
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent resumption
+                  e.stopPropagation();
                   setActiveIndex(index);
                   setIsPaused(true);
                 }}
               >
-                <span className={`text-xl font-mono transition-colors ${activeIndex === index ? 'text-cyan-400' : 'text-gray-600'}`}>
-                  0{index + 1}
-                </span>
+                <div className="flex items-center gap-6">
+                  <span className={`text-2xl font-black font-mono transition-all duration-500 ${activeIndex === index ? 'text-cyan-400 translate-x-1' : 'text-gray-800'}`}>
+                    0{index + 1}
+                  </span>
 
-                <div>
-                  <h3 className={`text-xl font-bold transition-colors ${activeIndex === index ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'}`}>
-                    {project.title}
-                  </h3>
-                  <p className={`text-xs transition-all ${activeIndex === index ? 'text-cyan-300 opacity-100 h-auto mt-1' : 'text-transparent opacity-0 h-0 overflow-hidden'}`}>
-                    Click to view full detail &rarr;
-                  </p>
+                  <div>
+                    <h3 className={`text-2xl font-bold transition-all duration-500 ${activeIndex === index ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>
+                      {project.title}
+                    </h3>
+                    <div className={`overflow-hidden transition-all duration-500 ${activeIndex === index ? 'max-h-20 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                      <div className="flex gap-2">
+                        {project.tech.slice(0, 3).map((tag, i) => (
+                          <span key={i} className="text-[10px] uppercase tracking-widest text-cyan-400/80 font-bold px-2 py-0.5 border border-cyan-400/20 rounded-md">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                <motion.div
+                  animate={{ x: activeIndex === index ? 0 : -10, opacity: activeIndex === index ? 1 : 0 }}
+                  className="text-cyan-400"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </motion.div>
               </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Right Column: 3D Ring */}
+        {/* Right Column: 3D Project Stack */}
         <div className="h-[600px] w-full relative">
-          <ProjectsRing
+          <ProjectStack3D
             projects={projects}
             activeIndex={activeIndex}
             setActiveIndex={setActiveIndex}
-            isPaused={isPaused}
             setIsPaused={setIsPaused}
           />
         </div>
@@ -633,6 +660,137 @@ const SkillsSection = () => {
           </motion.div>
         )}
       </AnimatePresence>
+    </section>
+  );
+};
+
+// Education Section
+const EducationSection = () => {
+  const education = [
+    {
+      degree: 'B.Tech in Computer Science & Engineering',
+      institution: 'GLA University, Mathura',
+      period: '2023 - 2027',
+      status: 'Pursuing',
+      details: 'Focusing on Advanced Algorithms, Machine Learning, and Full Stack Development.',
+      icon: '🎓',
+      color: 'cyan',
+    },
+    {
+      degree: 'Diploma in Engineering',
+      institution: 'Board of Technical Education',
+      period: '2020 - 2023',
+      status: 'Completed',
+      details: 'Specialized in Computer Science with a focus on Software Fundamentals and Networking.',
+      icon: '📜',
+      color: 'blue',
+    },
+    {
+      degree: 'Higher Secondary Education',
+      institution: "St. Paul's Senior Sec. School | CBSE",
+      period: '2018 - 2020',
+      status: 'Completed',
+      details: 'Completed with a focus on Physics, Chemistry, and Mathematics.',
+      icon: '🏫',
+      color: 'purple',
+    },
+  ];
+
+  const colorMap = {
+    cyan: 'border-cyan-500/30 text-cyan-400 bg-cyan-500/5',
+    blue: 'border-blue-500/30 text-blue-400 bg-blue-500/5',
+    purple: 'border-purple-500/30 text-purple-400 bg-purple-500/5',
+  };
+
+  return (
+    <section id="education" className="relative py-24 px-4 bg-transparent overflow-hidden">
+      <div className="relative z-10 max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
+        >
+          <div className="inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-xs font-mono uppercase tracking-widest mb-4">
+            Academic Journey
+          </div>
+          <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">
+            My <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">Education</span>
+          </h2>
+          <p className="text-gray-400 text-lg italic font-light max-w-2xl mx-auto">
+            "Education is not the learning of facts, but the training of the mind to think."
+          </p>
+        </motion.div>
+
+        <div className="relative">
+          {/* Vertical Timeline Line */}
+          <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/50 via-purple-500/50 to-transparent" />
+
+          <div className="space-y-12">
+            {education.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                className={`flex flex-col md:flex-row items-center cursor-default
+                  ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
+              >
+                {/* Content Card */}
+                <div className="w-full md:w-[45%]">
+                  <motion.div
+                    whileHover={{ scale: 1.02, translateY: -5 }}
+                    className="relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden group shadow-2xl transition-all duration-500 hover:border-cyan-400/30"
+                  >
+                    {/* Animated Shine Effect */}
+                    <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent z-10" />
+
+                    <div className="relative z-20">
+                      <div className="flex justify-between items-start mb-4">
+                        <span className="text-4xl">{item.icon}</span>
+                        <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest border rounded-full ${colorMap[item.color]}`}>
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300">
+                        {item.degree}
+                      </h3>
+                      <p className="text-gray-300 font-medium mb-4">{item.institution}</p>
+
+                      <div className="w-full h-px bg-white/5 mb-4" />
+
+                      <div className="flex justify-between items-center text-sm font-mono tracking-wider">
+                        <span className="text-cyan-400/80">{item.period}</span>
+                        <span className="text-gray-500 text-[10px] uppercase">Validated</span>
+                      </div>
+
+                      <p className="mt-4 text-gray-400 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 max-h-0 group-hover:max-h-20 overflow-hidden">
+                        {item.details}
+                      </p>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Timeline Center Node */}
+                <div className="relative flex items-center justify-center w-12 mx-auto md:w-[10%] my-6 md:my-0">
+                  <div className="w-4 h-4 bg-cyan-500 rounded-full border-4 border-black z-10 shadow-[0_0_20px_rgba(6,182,212,0.8)]" />
+                  <div className="absolute w-8 h-8 bg-cyan-400/20 rounded-full animate-ping" />
+                </div>
+
+                {/* Date Side (Hidden on Mobile) */}
+                <div className="hidden md:block w-[45%] text-left px-8">
+                  <span className="text-4xl font-black font-mono text-gray-800 opacity-30 select-none">
+                    {item.period.split(' - ')[0]}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
@@ -906,7 +1064,7 @@ const Navigation = () => {
         </motion.div>
 
         <div className="hidden md:flex gap-8">
-          {['About', 'Projects', 'Skills', 'Contact'].map((item) => (
+          {['About', 'Skills', 'Education', 'Projects', 'Contact'].map((item) => (
             <motion.a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -983,8 +1141,9 @@ export default function PortfolioWebsite() {
       <main className="relative z-10">
         <HeroSection />
         <AboutSection />
-        <ProjectsSection />
         <SkillsSection />
+        <EducationSection />
+        <ProjectsSection />
         <ContactSection />
       </main>
       <Footer />
