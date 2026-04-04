@@ -16,7 +16,7 @@
 
 **A visually stunning, interactive 3D portfolio built with cutting-edge web technologies.**
 
-[🌐 Live Demo](#) · [📧 Contact Me](#contact) · [⭐ Star this Repo](https://github.com/rish0000-dot/Portfolio)
+[🌐 https://portfolio1-one-murex-81.vercel.app/](#) · [📧 Contact Me](#contact) · [⭐ Star this Repo](https://github.com/rish0000-dot/Portfolio)
 
 </div>
 
