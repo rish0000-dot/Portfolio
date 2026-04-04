@@ -1,4 +1,6 @@
 <div align="center">
+  
+![Portfolio Hero Banner](public/hero.png)
 
 # 🚀 Rishabh Sharma — Personal Portfolio
 
